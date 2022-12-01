@@ -52,7 +52,7 @@ public class StatsServiceImpl implements StatsService {
                 ret.add(ViewDto.builder()
                             .app(object[0].toString())
                             .uri(object[1].toString())
-                            .hits(Integer.valueOf(object[2].toString()))
+                            .hits(Integer.valueOf(object[2].toString()).intValue())
                             .build());
             }
         }
