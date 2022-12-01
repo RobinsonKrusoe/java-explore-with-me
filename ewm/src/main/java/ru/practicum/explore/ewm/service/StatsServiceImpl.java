@@ -68,7 +68,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public Event fillViews(Event event){
+    public Event fillViews(Event event) {
         try {
             List<ViewDto> stat = new ArrayList<>(findStats(LocalDateTime.now().minusDays(100),
                     LocalDateTime.now(),
@@ -77,7 +77,9 @@ public class StatsServiceImpl implements StatsService {
 
             if (stat.size() > 0)
                 event.setViews(stat.get(0).getHits());
-        } catch (JsonProcessingException e) {}
+        } catch (JsonProcessingException e) {
+            return event;
+        }
 
         return event;
     }

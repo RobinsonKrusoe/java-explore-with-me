@@ -64,7 +64,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             Integer from,
             Integer size) {
 
-        Pageable pagingSet =null;
+        Pageable pagingSet = null;
 
         if (sort != null) {
             SortVariant sortVariant = null;

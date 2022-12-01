@@ -1,15 +1,8 @@
 package ru.practicum.explore.ewm.service;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.explore.ewm.dto.CompilationDto;
-import ru.practicum.explore.ewm.dto.EventFullDto;
-import ru.practicum.explore.ewm.dto.EventShortDto;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * API для работы с событиями

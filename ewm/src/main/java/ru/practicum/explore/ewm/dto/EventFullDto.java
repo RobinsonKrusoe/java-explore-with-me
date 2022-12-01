@@ -1,12 +1,8 @@
 package ru.practicum.explore.ewm.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
 import ru.practicum.explore.ewm.model.EventState;
-
-import java.time.LocalDateTime;
 
 /**
  * Информация для редактирования события администратором. Все поля необязательные. Значение полей не валидируется.

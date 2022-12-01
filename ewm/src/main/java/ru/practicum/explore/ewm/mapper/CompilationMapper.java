@@ -17,7 +17,7 @@ public class CompilationMapper {
                     .title(compilation.getTitle())
                     .build();
 
-            if (compilation.getEvents() != null){
+            if (compilation.getEvents() != null) {
                 for (Event event: compilation.getEvents()) {
                     if (ret.getEvents() == null) {
                         ret.setEvents(new ArrayList<>());

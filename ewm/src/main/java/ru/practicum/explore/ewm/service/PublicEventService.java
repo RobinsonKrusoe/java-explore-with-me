@@ -1,15 +1,8 @@
 package ru.practicum.explore.ewm.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.practicum.explore.ewm.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.ewm.dto.EventFullDto;
 import ru.practicum.explore.ewm.dto.EventShortDto;
-import ru.practicum.explore.ewm.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +24,7 @@ public interface PublicEventService {
      * @param size количество событий в наборе
      * @return
      */
-    Collection <EventShortDto> search(
+    Collection<EventShortDto> search(
             String text,
             List<Long> categories,
             Boolean paid,

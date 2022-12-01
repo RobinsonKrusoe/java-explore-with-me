@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class StatsMapper {
-    public static HitDto toHitDto(Hit hit){
-        if(hit != null){
+    public static HitDto toHitDto(Hit hit) {
+        if (hit != null) {
             HitDto ret = HitDto.builder()
                     .id(hit.getId())
                     .app(hit.getApp())
@@ -24,10 +24,10 @@ public class StatsMapper {
         }
     }
 
-    public static Hit toHit(HitDto hitDto){
+    public static Hit toHit(HitDto hitDto) {
         Hit hit = new Hit();
 
-        if(hitDto.getId() != null){
+        if (hitDto.getId() != null) {
             hit.setId(hitDto.getId());
         }
 

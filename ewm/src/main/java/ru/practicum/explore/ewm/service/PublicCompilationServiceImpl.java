@@ -3,14 +3,10 @@ package ru.practicum.explore.ewm.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.ewm.dto.CompilationDto;
-import ru.practicum.explore.ewm.dto.EventShortDto;
 import ru.practicum.explore.ewm.mapper.CompilationMapper;
-import ru.practicum.explore.ewm.mapper.EventMapper;
 import ru.practicum.explore.ewm.model.Compilation;
-import ru.practicum.explore.ewm.model.Event;
 import ru.practicum.explore.ewm.repository.CompilationRepository;
 
 import java.util.ArrayList;

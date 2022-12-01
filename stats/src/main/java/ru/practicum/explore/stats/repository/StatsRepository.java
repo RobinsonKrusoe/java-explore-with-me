@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.time.LocalDateTime;
 
-public interface StatsRepository extends JpaRepository<Hit, Long>{
+public interface StatsRepository extends JpaRepository<Hit, Long> {
     @Query(value = "select app, uri, count(distinct ip) hits " +
             " from stats " +
             " where time_stamp between ?1 and ?2 and upper(uri) in (?3)" +

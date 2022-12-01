@@ -27,14 +27,14 @@ import java.util.List;
 public class PublicEventsController {
     private final PublicEventService service;
     private final StatsService statsService;
-    private final String APP;
+    private final String app;
 
     public PublicEventsController(PublicEventService service,
                                   StatsService statsService,
                                   @Value("${app-name-for-stat}") String app) {
         this.service = service;
         this.statsService = statsService;
-        APP = app;
+        this.app = app;
     }
 
     /**
@@ -52,7 +52,7 @@ public class PublicEventsController {
      * @return
      */
     @GetMapping
-    public Collection <EventShortDto> getEvents(
+    public Collection<EventShortDto> getEvents(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
@@ -69,7 +69,7 @@ public class PublicEventsController {
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
 
         statsService.add(HitDto.builder()
-                .app(APP)
+                .app(app)
                 .uri(request.getRequestURI())
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
@@ -96,7 +96,7 @@ public class PublicEventsController {
                                  HttpServletRequest request) {
         log.info("Get EventFull with id={}", id);
         statsService.add(HitDto.builder()
-                .app(APP)
+                .app(app)
                 .uri(request.getRequestURI())
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))

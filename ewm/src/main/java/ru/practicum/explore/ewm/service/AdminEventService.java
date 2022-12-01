@@ -4,7 +4,6 @@ import ru.practicum.explore.ewm.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.ewm.dto.EventFullDto;
 import ru.practicum.explore.ewm.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +29,7 @@ public interface AdminEventService {
                                     String rangeEnd,
                                     Integer from,
                                     Integer size);
+
     /**
      * Редактирование события
      * @param eventDto

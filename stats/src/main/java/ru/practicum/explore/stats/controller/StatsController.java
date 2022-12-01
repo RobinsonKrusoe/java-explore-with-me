@@ -2,15 +2,12 @@ package ru.practicum.explore.stats.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.practicum.explore.stats.dto.HitDto;
 import ru.practicum.explore.stats.dto.ViewDto;
 import ru.practicum.explore.stats.service.StatsService;
-
-import javax.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +33,7 @@ public class StatsController {
      * Название сервиса, uri и ip пользователя указаны в теле запроса.
      */
     @PostMapping("/hit")
-    public HitDto postHit(@RequestBody HitDto hitDto){
+    public HitDto postHit(@RequestBody HitDto hitDto) {
         log.info("Post hit with hitDto {}", hitDto);
         return service.add(hitDto);
     }
@@ -49,7 +46,7 @@ public class StatsController {
             @RequestParam String start,
             @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(required = false, defaultValue = "false") Boolean unique){
+            @RequestParam(required = false, defaultValue = "false") Boolean unique) {
 
         log.info("Get stats with start={}, end={}, uris={}, unique={}", start, end, uris, unique);
 

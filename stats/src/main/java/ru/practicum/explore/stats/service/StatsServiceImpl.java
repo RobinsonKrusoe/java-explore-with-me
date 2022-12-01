@@ -8,7 +8,6 @@ import ru.practicum.explore.stats.mapper.StatsMapper;
 import ru.practicum.explore.stats.model.Hit;
 import ru.practicum.explore.stats.repository.StatsRepository;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,19 +36,19 @@ public class StatsServiceImpl implements StatsService {
         List<String> uURIs = new ArrayList<>(uris);
         List<ViewDto> ret = new ArrayList<>();
 
-        for(int i = 0 ; i < uURIs.size(); i++){
+        for (int i = 0; i < uURIs.size(); i++) {
             uURIs.set(i, uURIs.get(i).toUpperCase());
         }
 
         List<Object[]> result = null;
-        if(unique){
+        if (unique) {
             result = repository.findStatsUnique(start, end, uURIs);
         } else {
             result = repository.findStats(start, end, uURIs);
         }
 
-        if(result != null && !result.isEmpty()){
-            for(Object[] object : result){
+        if (result != null && !result.isEmpty()) {
+            for (Object[] object : result) {
                 ret.add(ViewDto.builder()
                             .app(object[0].toString())
                             .uri(object[1].toString())

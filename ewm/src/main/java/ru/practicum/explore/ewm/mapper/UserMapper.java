@@ -28,6 +28,7 @@ public class UserMapper {
             return null;
         }
     }
+
     public static User toUser(NewUserRequestDto userDto) {
         if (userDto != null) {
             User user = new User();
