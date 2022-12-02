@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ViewDto {
-    private String app; //Название сервиса
-    private String uri; //URI сервиса
-    private int hits;   //Количество просмотров
+    private String app;     //Название сервиса
+    private String uri;     //URI сервиса
+    private Integer hits;   //Количество просмотров
 }

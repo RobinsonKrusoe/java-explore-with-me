@@ -49,10 +49,11 @@ public class StatsServiceImpl implements StatsService {
 
         if (result != null && !result.isEmpty()) {
             for (Object[] object : result) {
+                Integer hits = Integer.valueOf(object[2].toString());
                 ret.add(ViewDto.builder()
                             .app(object[0].toString())
                             .uri(object[1].toString())
-                            .hits(Integer.parseInt((String)object[2]))
+                            .hits(hits)
                             .build());
             }
         }

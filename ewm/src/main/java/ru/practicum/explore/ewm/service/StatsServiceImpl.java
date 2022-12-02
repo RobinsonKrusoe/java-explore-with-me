@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 import ru.practicum.explore.ewm.dto.HitDto;
 import ru.practicum.explore.ewm.dto.ViewDto;
 import ru.practicum.explore.ewm.model.Event;
@@ -60,11 +59,11 @@ public class StatsServiceImpl implements StatsService {
             sb.append("&unique=").append(unique);
         }
 
-        ResponseEntity<String> response = rest.getForEntity(sb.toString(), String.class);
-        String jsonString = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseEntity<ViewDto[]> response = rest.getForEntity(sb.toString(), ViewDto[].class);
 
-        return objectMapper.readValue(jsonString, new TypeReference<>() {});
+        List<ViewDto> views = List.of(response.getBody());
+
+        return views;
     }
 
     @Override
@@ -75,8 +74,10 @@ public class StatsServiceImpl implements StatsService {
                     List.of("/events/" + event.getId()),
                     true));
 
-            if (stat.size() > 0)
-                event.setViews(stat.get(0).getHits());
+            if (stat.size() > 0) {
+                ViewDto view = stat.get(0);
+                event.setViews(view.getHits());
+            }
         } catch (JsonProcessingException e) {
             return event;
         }

@@ -186,6 +186,7 @@ public class PublicEventServiceImpl implements PublicEventService {
      */
     @Override
     public EventFullDto get(Long id) {
-        return EventMapper.toEventFullDto(statsService.fillViews(repository.getReferenceById(id)));
+        Event event = repository.getReferenceById(id);
+        return EventMapper.toEventFullDto(statsService.fillViews(event));
     }
 }
