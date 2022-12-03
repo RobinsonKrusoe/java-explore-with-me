@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.explore.ewm.model.Compilation;
 
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
-
-    Page<Compilation> findByPinned(Boolean pinned, Pageable pagingSet);
-
+    Page<Compilation> findAllByPinned(Boolean pinned, Pageable pagingSet);
 }

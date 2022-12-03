@@ -2,7 +2,6 @@ package ru.practicum.explore.ewm.service;
 
 import ru.practicum.explore.ewm.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.ewm.dto.EventFullDto;
-import ru.practicum.explore.ewm.model.Event;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +35,7 @@ public interface AdminEventService {
      * @param eventId
      * @return
      */
-    EventFullDto save(AdminUpdateEventRequestDto eventDto, Long eventId);
+    EventFullDto update(AdminUpdateEventRequestDto eventDto, Long eventId);
 
     /**
      * Публикация события
@@ -51,11 +50,4 @@ public interface AdminEventService {
      * @return
      */
     EventFullDto reject(Long eventId);
-
-    /**
-     * Для работы с другими сервисами
-     * @param eventId
-     * @return
-     */
-    Event get(Long eventId);
 }

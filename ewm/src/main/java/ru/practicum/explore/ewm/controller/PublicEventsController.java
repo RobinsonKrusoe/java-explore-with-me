@@ -2,7 +2,6 @@ package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import ru.practicum.explore.ewm.dto.EventFullDto;
@@ -21,7 +20,6 @@ import java.util.List;
  * Публичный API для работы с событиями
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/events")
 public class PublicEventsController {

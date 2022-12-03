@@ -1,6 +1,8 @@
 package ru.practicum.explore.ewm.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore.errorHandle.exception.EntityNotFoundException;
 import ru.practicum.explore.errorHandle.exception.ValidationException;
 import ru.practicum.explore.ewm.dto.CompilationDto;
 import ru.practicum.explore.ewm.dto.NewCompilationDto;
@@ -8,17 +10,19 @@ import ru.practicum.explore.ewm.mapper.CompilationMapper;
 import ru.practicum.explore.ewm.model.Compilation;
 import ru.practicum.explore.ewm.model.Event;
 import ru.practicum.explore.ewm.repository.CompilationRepository;
+import ru.practicum.explore.ewm.repository.EventRepository;
 
-import java.util.ArrayList;
+import java.util.Set;
 
-@Component
+@Service
 public class AdminCompilationsServiceImpl implements AdminCompilationsService {
     private final CompilationRepository repository;
-    private final AdminEventService eventService;
+    private final EventRepository eventRepository;
 
-    public AdminCompilationsServiceImpl(CompilationRepository repository, AdminEventService eventService) {
+    public AdminCompilationsServiceImpl(CompilationRepository repository,
+                                        EventRepository eventRepository) {
         this.repository = repository;
-        this.eventService = eventService;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -28,6 +32,7 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @return
      */
     @Override
+    @Transactional
     public CompilationDto add(NewCompilationDto newCompilationDto) {
         if (newCompilationDto.getTitle() == null) {
             throw new ValidationException("Пустое название подборки!");
@@ -35,14 +40,11 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
 
         Compilation compDB = CompilationMapper.toCompilation(newCompilationDto);
 
-        for (Long eventId : newCompilationDto.getEvents()) {
-            if (compDB.getEvents() == null) {
-                compDB.setEvents(new ArrayList<>());
-            }
-            compDB.getEvents().add(eventService.get(eventId));
-        }
+        Set<Event> events = eventRepository.findByIdIn(newCompilationDto.getEvents());
 
-        compDB = repository.saveAndFlush(compDB);
+        compDB.setEvents(events);
+
+        repository.save(compDB);
 
         return CompilationMapper.toCompilationDto(compDB);
     }
@@ -53,6 +55,7 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @param compId
      */
     @Override
+    @Transactional
     public void del(Long compId) {
         repository.deleteById(compId);
     }
@@ -64,13 +67,14 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @param eventId
      */
     @Override
+    @Transactional
     public void delEvent(Long compId, Long eventId) {
         Compilation compDB = repository.getReferenceById(compId);
-        Event eventDB = eventService.get(eventId);
+        Event eventDB = getEvent(eventId);
 
         compDB.getEvents().remove(eventDB);
 
-        compDB = repository.saveAndFlush(compDB);
+        repository.save(compDB);
     }
 
     /**
@@ -80,17 +84,14 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @param eventId
      */
     @Override
+    @Transactional
     public void addEvent(Long compId, Long eventId) {
         Compilation compDB = repository.getReferenceById(compId);
-        Event eventDB = eventService.get(eventId);
-
-        if (compDB.getEvents() == null) {
-            compDB.setEvents(new ArrayList<>());
-        }
+        Event eventDB = getEvent(eventId);
 
         compDB.getEvents().add(eventDB);
 
-        compDB = repository.saveAndFlush(compDB);
+        repository.save(compDB);
     }
 
     /**
@@ -99,10 +100,11 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @param compId
      */
     @Override
+    @Transactional
     public void unpin(Long compId) {
         Compilation compDB = repository.getReferenceById(compId);
         compDB.setPinned(false);
-        compDB = repository.saveAndFlush(compDB);
+        repository.save(compDB);
     }
 
     /**
@@ -111,9 +113,22 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
      * @param compId
      */
     @Override
+    @Transactional
     public void pin(Long compId) {
         Compilation compDB = repository.getReferenceById(compId);
         compDB.setPinned(true);
-        compDB = repository.saveAndFlush(compDB);
+        repository.save(compDB);
     }
+
+    /**
+     * Получени события
+     *
+     * @param eventId
+     * @return
+     */
+    private Event getEvent(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Событие #" + eventId + " не существует!"));
+    }
+
 }

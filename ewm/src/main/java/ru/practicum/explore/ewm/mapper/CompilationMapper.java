@@ -13,7 +13,7 @@ public class CompilationMapper {
             CompilationDto ret = CompilationDto.builder()
                     .id(compilation.getId())
                     .events(new ArrayList<>())
-                    .pinned(compilation.getPinned())
+                    .pinned(compilation.isPinned())
                     .title(compilation.getTitle())
                     .build();
 

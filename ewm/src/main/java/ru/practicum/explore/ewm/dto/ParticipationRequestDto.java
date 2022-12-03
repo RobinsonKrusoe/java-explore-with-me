@@ -1,13 +1,15 @@
 package ru.practicum.explore.ewm.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Заявка на участие в событии
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 public class ParticipationRequestDto {
     private Long id;                //Идентификатор заявки

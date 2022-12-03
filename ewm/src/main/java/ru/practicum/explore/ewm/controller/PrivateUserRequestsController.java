@@ -1,7 +1,6 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.ParticipationRequestDto;
 import ru.practicum.explore.ewm.service.PrivateUserRequestService;
@@ -12,7 +11,6 @@ import java.util.Collection;
  * Закрытый API для работы с запросами текущего пользователя на участие в событиях
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/users/{userId}/requests")
 public class PrivateUserRequestsController {

@@ -2,9 +2,11 @@ package ru.practicum.explore.ewm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -12,7 +14,8 @@ import java.time.LocalDateTime;
  * Данные для изменения информации о событии
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 @Jacksonized
 public class UpdateEventRequestDto {
@@ -23,6 +26,7 @@ public class UpdateEventRequestDto {
     private String description;         //Новое описание
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;    //Новые дата и время на которые намечено событие
+    @NotNull
     private Long eventId;               //Идентификатор события
     private Boolean paid;               //Новое значение флага о платности мероприятия
     private Integer participantLimit;   //Новый лимит пользователей

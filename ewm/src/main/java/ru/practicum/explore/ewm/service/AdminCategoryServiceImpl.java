@@ -1,24 +1,24 @@
 package ru.practicum.explore.ewm.service;
 
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.errorHandle.exception.EntityAlreadyExistException;
-import ru.practicum.explore.errorHandle.exception.EntityNotFoundException;
 import ru.practicum.explore.errorHandle.exception.ValidationException;
 import ru.practicum.explore.ewm.dto.CategoryDto;
 import ru.practicum.explore.ewm.dto.NewCategoryDto;
 import ru.practicum.explore.ewm.mapper.CategoryMapper;
 import ru.practicum.explore.ewm.model.Category;
 import ru.practicum.explore.ewm.repository.CategoryRepository;
+import ru.practicum.explore.ewm.repository.EventRepository;
 
-import java.util.Optional;
-
-@Component
+@Service
 public class AdminCategoryServiceImpl implements AdminCategoryService {
     private final CategoryRepository repository;
+    private final EventRepository eventRepository;
 
-    public AdminCategoryServiceImpl(CategoryRepository repository) {
+    public AdminCategoryServiceImpl(CategoryRepository repository, EventRepository eventRepository) {
         this.repository = repository;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -28,6 +28,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
      * @return
      */
     @Override
+    @Transactional
     public CategoryDto add(NewCategoryDto newCategoryDto) {
         if (newCategoryDto.getName() == null) {
             throw new ValidationException("Пустое иия категории!");
@@ -39,7 +40,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         }
 
         Category category = CategoryMapper.toCategory(newCategoryDto);
-        category = repository.saveAndFlush(category);
+        repository.save(category);
         return CategoryMapper.toCategoryDto(category);
     }
 
@@ -50,6 +51,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
      * @return
      */
     @Override
+    @Transactional
     public CategoryDto patch(CategoryDto categoryDto) {
         if (categoryDto.getId() == null || categoryDto.getName() == null) {
             throw new ValidationException("Некорректный запрос изменения категории!");
@@ -61,28 +63,20 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         }
 
         Category category = CategoryMapper.toCategory(categoryDto);
-        category = repository.saveAndFlush(category);
+        repository.save(category);
         return CategoryMapper.toCategoryDto(category);
     }
 
     /**
      * Удаление категории
      *
-     * @param id
+     * @param catId
      */
     @Override
-    public void del(long id) {
-        get(id);
-        repository.deleteById(id);
-    }
-
-    @Override
-    public Category get(long id) {
-        Optional<Category> category = repository.findById(id);
-        if (category.isPresent()) {
-            return category.get();
-        } else {
-            throw new EntityNotFoundException("Категория #" + id + " не существует!");
+    @Transactional
+    public void del(long catId) {
+        if (!eventRepository.existsByCategory_Id(catId)) {
+            repository.deleteById(catId);
         }
     }
 }

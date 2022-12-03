@@ -1,7 +1,6 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.CategoryDto;
 import ru.practicum.explore.ewm.service.PublicCategoryService;
@@ -12,7 +11,6 @@ import java.util.Collection;
  * Публичный API для работы с категориями
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/categories")
 public class PublicCategoriesController {
@@ -30,7 +28,7 @@ public class PublicCategoriesController {
      */
     @GetMapping
     public Collection<CategoryDto> get(@RequestParam(required = false, defaultValue = "0") Integer from,
-                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
+                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("Get Categories with from={}, size={}", from, size);
         return service.get(from, size);
     }

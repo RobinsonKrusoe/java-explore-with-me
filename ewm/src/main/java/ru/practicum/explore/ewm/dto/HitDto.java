@@ -1,9 +1,11 @@
 package ru.practicum.explore.ewm.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class HitDto {
     private Long id;    //Идентификатор записи

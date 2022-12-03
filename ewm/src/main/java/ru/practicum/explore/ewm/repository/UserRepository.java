@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Page<User> getAllByIdIn(List<Long> ids, Pageable pagingSet);
+    Page<User> findAllByIdIn(List<Long> ids, Pageable pagingSet);
 
     boolean existsByName(String name);
+
+    Page<User> findAll(Pageable pagingSet);
 }

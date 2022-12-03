@@ -1,8 +1,6 @@
 package ru.practicum.explore.ewm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +10,8 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "event_request")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventRequest {

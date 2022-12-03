@@ -1,7 +1,8 @@
 package ru.practicum.explore.ewm.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -9,7 +10,8 @@ import java.math.BigDecimal;
  * Широта и долгота места проведения события
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 public class Location {
     private BigDecimal lat; //Широта

@@ -1,7 +1,6 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.*;
 import ru.practicum.explore.ewm.service.PrivateUserEventService;
@@ -13,7 +12,6 @@ import java.util.Collection;
  * Закрытый API для работы с событиями
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/users/{userId}/events")
 public class PrivateUserEventsController {
@@ -48,7 +46,7 @@ public class PrivateUserEventsController {
      */
     @PatchMapping
     public EventFullDto patchEvent(@PathVariable Long userId,
-                                   @RequestBody UpdateEventRequestDto updateEventRequestDto) {
+                                   @Valid @RequestBody UpdateEventRequestDto updateEventRequestDto) {
 
         log.info("Patch Event with userId={}, updateEventRequestDto {}", userId, updateEventRequestDto);
 
@@ -108,7 +106,7 @@ public class PrivateUserEventsController {
      */
     @GetMapping("/{eventId}/requests")
     public Collection<ParticipationRequestDto> getParticipationRequests(@PathVariable Long userId,
-                                                            @PathVariable Long eventId) {
+                                                                        @PathVariable Long eventId) {
 
         log.info("Get Participation with userId={}, eventId={}", userId, eventId);
 

@@ -2,7 +2,6 @@ package ru.practicum.explore.ewm.service;
 
 import ru.practicum.explore.ewm.dto.CategoryDto;
 import ru.practicum.explore.ewm.dto.NewCategoryDto;
-import ru.practicum.explore.ewm.model.Category;
 
 /**
  * API для работы с категориями
@@ -25,7 +24,5 @@ public interface AdminCategoryService {
     /**
      * Удаление категории
      */
-    void del(long id);
-
-    Category get(long id);
+    void del(long catId);
 }

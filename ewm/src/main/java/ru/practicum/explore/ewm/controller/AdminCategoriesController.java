@@ -1,17 +1,17 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.CategoryDto;
 import ru.practicum.explore.ewm.dto.NewCategoryDto;
 import ru.practicum.explore.ewm.service.AdminCategoryService;
 
+import javax.validation.Valid;
+
 /**
  * Контроллер API для работы с категориями
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/admin/categories")
 public class AdminCategoriesController {
@@ -27,7 +27,7 @@ public class AdminCategoriesController {
      * @return
      */
     @PatchMapping
-    public CategoryDto patchCategory(@RequestBody CategoryDto categoryDto) {
+    public CategoryDto patchCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Patch categoryDto {}", categoryDto);
         return service.patch(categoryDto);
     }
@@ -38,7 +38,7 @@ public class AdminCategoriesController {
      * @return
      */
     @PostMapping
-    public CategoryDto postCategory(@RequestBody NewCategoryDto categoryDto) {
+    public CategoryDto postCategory(@Valid @RequestBody NewCategoryDto categoryDto) {
         log.info("Post categoryDto {}", categoryDto);
         return service.add(categoryDto);
     }

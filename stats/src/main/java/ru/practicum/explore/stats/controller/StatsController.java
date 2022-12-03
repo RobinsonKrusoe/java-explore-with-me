@@ -1,7 +1,7 @@
 package ru.practicum.explore.stats.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,6 +9,7 @@ import ru.practicum.explore.stats.dto.HitDto;
 import ru.practicum.explore.stats.dto.ViewDto;
 import ru.practicum.explore.stats.service.StatsService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -18,7 +19,6 @@ import java.util.List;
  * Контроллер API для работы со статистикой посещений
  */
 @Slf4j
-@Validated
 @RestController
 public class StatsController {
     private final StatsService service;
@@ -33,7 +33,7 @@ public class StatsController {
      * Название сервиса, uri и ip пользователя указаны в теле запроса.
      */
     @PostMapping("/hit")
-    public HitDto postHit(@RequestBody HitDto hitDto) {
+    public HitDto postHit(@Valid @RequestBody HitDto hitDto) {
         log.info("Post hit with hitDto {}", hitDto);
         return service.add(hitDto);
     }

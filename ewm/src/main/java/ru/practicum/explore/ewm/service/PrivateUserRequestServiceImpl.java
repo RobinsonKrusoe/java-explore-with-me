@@ -1,26 +1,31 @@
 package ru.practicum.explore.ewm.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore.errorHandle.exception.EntityNotFoundException;
+import ru.practicum.explore.errorHandle.exception.ValidationException;
 import ru.practicum.explore.ewm.dto.ParticipationRequestDto;
 import ru.practicum.explore.ewm.mapper.EventRequestMapper;
 import ru.practicum.explore.ewm.model.*;
+import ru.practicum.explore.ewm.repository.EventRepository;
 import ru.practicum.explore.ewm.repository.EventRequestRepository;
+import ru.practicum.explore.ewm.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class PrivateUserRequestServiceImpl implements PrivateUserRequestService {
     private final EventRequestRepository repository;
-    private final AdminUserService userService;
-    private final AdminEventService eventService;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     public PrivateUserRequestServiceImpl(EventRequestRepository repository,
-                                         AdminUserService userService,
-                                         AdminEventService eventService) {
+                                         UserRepository userRepository,
+                                         EventRepository eventRepository) {
         this.repository = repository;
-        this.userService = userService;
-        this.eventService = eventService;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -31,8 +36,6 @@ public class PrivateUserRequestServiceImpl implements PrivateUserRequestService 
      */
     @Override
     public List<ParticipationRequestDto> get(Long userId) {
-        User user = userService.getUser(userId);
-
         List<ParticipationRequestDto> ret = new ArrayList<>();
         for (EventRequest eReq : repository.findAllOwnRequests(userId)) {
             ret.add(EventRequestMapper.toParticipationRequestDto(eReq));
@@ -49,13 +52,37 @@ public class PrivateUserRequestServiceImpl implements PrivateUserRequestService 
      * @return
      */
     @Override
+    @Transactional
     public ParticipationRequestDto addRequestToEvent(Long userId, Long eventId) {
-        User user = userService.getUser(userId);
-        Event event = eventService.get(eventId);
+        if (repository.existsByRequester_IdAndEvent_Id(userId, eventId)) {
+            throw new ValidationException("Запрос пользователя #" + userId +
+                    " на мероприятие #" + eventId + " уже существует!");
+        }
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Событие #" + eventId + " не существует!"));
+
+        if (event.getInitiator().getId() == userId) {
+            throw new ValidationException("Нельзя посылать запрос на своё мероприятие!");
+        }
+
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ValidationException("Можно посылать заявки только на мероприятия в статусе " +
+                    EventState.PUBLISHED + "!");
+        }
+
+        if (event.getParticipantLimit() > 0) {    //Если установлен лимит заявок
+            Integer reqCount = repository.countAllByEventId(eventId);
+            if (event.getParticipantLimit() <= reqCount) {
+                throw new ValidationException("Лимит заявок на данное мероприятие исчерпан!");
+            }
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь #" + userId + " не существует!"));
 
         EventRequest newEventRequest = EventRequestMapper.toNewEventRequest(user, event);
 
-        newEventRequest = repository.saveAndFlush(newEventRequest);
+        repository.save(newEventRequest);
 
         return EventRequestMapper.toParticipationRequestDto(newEventRequest);
     }
@@ -68,11 +95,12 @@ public class PrivateUserRequestServiceImpl implements PrivateUserRequestService 
      * @return
      */
     @Override
+    @Transactional
     public ParticipationRequestDto canselOwnRequest(Long userId, Long requestId) {
-        User user = userService.getUser(userId);
-        EventRequest eventRequestDB = repository.getReferenceById(requestId);
+        EventRequest eventRequestDB = repository.findByRequester_idAndId(userId, requestId);
         eventRequestDB.setStatus(RequestState.CANCELED);
-        eventRequestDB = repository.saveAndFlush(eventRequestDB);
+
+        repository.save(eventRequestDB);
 
         return EventRequestMapper.toParticipationRequestDto(eventRequestDB);
     }

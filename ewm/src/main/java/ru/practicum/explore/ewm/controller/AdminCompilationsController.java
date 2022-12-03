@@ -1,17 +1,17 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.CompilationDto;
 import ru.practicum.explore.ewm.dto.NewCompilationDto;
 import ru.practicum.explore.ewm.service.AdminCompilationsService;
 
+import javax.validation.Valid;
+
 /**
  * Контроллер API для работы с подборками событий
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/admin/compilations")
 public class AdminCompilationsController {
@@ -27,7 +27,7 @@ public class AdminCompilationsController {
      * @return
      */
     @PostMapping
-    public CompilationDto postCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public CompilationDto postCompilation(@Valid  @RequestBody NewCompilationDto newCompilationDto) {
         log.info("Post NewCompilation with newCompilationDto={}", newCompilationDto);
         return service.add(newCompilationDto);
     }

@@ -5,15 +5,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.errorHandle.exception.EntityNotFoundException;
+import ru.practicum.explore.errorHandle.exception.ValidationException;
 import ru.practicum.explore.ewm.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.ewm.dto.EventFullDto;
 import ru.practicum.explore.ewm.mapper.EventMapper;
 import ru.practicum.explore.ewm.model.Category;
 import ru.practicum.explore.ewm.model.Event;
 import ru.practicum.explore.ewm.model.EventState;
+import ru.practicum.explore.ewm.repository.CategoryRepository;
 import ru.practicum.explore.ewm.repository.EventRepository;
 
 import java.time.LocalDateTime;
@@ -21,20 +24,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
-@Component
+@Service
 public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository repository;
-    private final AdminCategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final StatsService statsService;
 
     public AdminEventServiceImpl(EventRepository repository,
-                                 AdminCategoryService categoryService,
+                                 CategoryRepository categoryRepository,
                                  StatsService statsService) {
         this.repository = repository;
-        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
         this.statsService = statsService;
     }
 
@@ -118,14 +120,15 @@ public class AdminEventServiceImpl implements AdminEventService {
      * @return
      */
     @Override
-    public EventFullDto save(AdminUpdateEventRequestDto eventDto, Long eventId) {
+    @Transactional
+    public EventFullDto update(AdminUpdateEventRequestDto eventDto, Long eventId) {
         Event eventDB = get(eventId);
         if (eventDto.getAnnotation() != null) {
             eventDB.setAnnotation(eventDto.getAnnotation());
         }
 
         if (eventDto.getCategory() != null) {
-            Category cat = categoryService.get(eventDto.getCategory());
+            Category cat = getCategory(eventDto.getCategory());
             eventDB.setCategory(cat);
         }
 
@@ -158,7 +161,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             eventDB.setTitle(eventDto.getTitle());
         }
 
-        eventDB = repository.saveAndFlush(eventDB);
+        repository.save(eventDB);
 
         return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
     }
@@ -170,12 +173,22 @@ public class AdminEventServiceImpl implements AdminEventService {
      * @return
      */
     @Override
+    @Transactional
     public EventFullDto publish(Long eventId) {
         Event eventDB = get(eventId);
+
+        if (eventDB.getState() != EventState.PENDING) {
+            throw new ValidationException("Нельзя опубликовать событие в статусе" + eventDB.getState() + "!");
+        }
+
+        if (eventDB.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new ValidationException("Можно публиковать события только не познее чем за час до начала!");
+        }
+
         eventDB.setState(EventState.PUBLISHED);
         eventDB.setPublishedOn(LocalDateTime.now());
 
-        eventDB = repository.saveAndFlush(eventDB);
+        repository.save(eventDB);
 
         return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
     }
@@ -187,26 +200,31 @@ public class AdminEventServiceImpl implements AdminEventService {
      * @return
      */
     @Override
+    @Transactional
     public EventFullDto reject(Long eventId) {
         Event eventDB = get(eventId);
-        eventDB.setState(EventState.CANCELED);
-        eventDB = repository.saveAndFlush(eventDB);
-        return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
+        if (eventDB.getState() == EventState.PENDING) {
+            eventDB.setState(EventState.CANCELED);
+            repository.save(eventDB);
+            return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
+        } else {
+            throw new ValidationException("Нельзя отменить событие в статусе" + eventDB.getState() + "!");
+        }
     }
 
     /**
-     * Для работы с другими сервисами
+     * Получени события
      *
      * @param eventId
      * @return
      */
-    @Override
-    public Event get(Long eventId) {
-        Optional<Event> event = repository.findById(eventId);
-        if (event.isPresent()) {
-            return statsService.fillViews(event.get());
-        } else {
-            throw new EntityNotFoundException("Событие #" + eventId + " не существует!");
-        }
+    private Event get(Long eventId) {
+        return statsService.fillViews(repository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Событие #" + eventId + " не существует!")));
+    }
+
+    private Category getCategory(Long catId) {
+        return categoryRepository.findById(catId)
+                .orElseThrow(() -> new EntityNotFoundException("Категория #" + catId + " не существует!"));
     }
 }

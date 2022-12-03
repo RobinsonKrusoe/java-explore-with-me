@@ -1,11 +1,13 @@
 package ru.practicum.explore.ewm.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
+import javax.validation.constraints.NotBlank;
+
+@Getter
+@Setter
 public class NewCategoryDto {
-    private String dummy;   //Пустышка. т.к. когда в классе только одно поле name этот springfuck падает
+    @NotBlank
     private String name;    //Название категории
 }

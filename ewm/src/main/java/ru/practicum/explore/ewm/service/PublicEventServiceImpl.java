@@ -6,11 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
+import org.springframework.stereotype.Service;
 import ru.practicum.explore.errorHandle.exception.ValidationException;
 import ru.practicum.explore.ewm.dto.EventFullDto;
 import ru.practicum.explore.ewm.dto.EventShortDto;
@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Slf4j
-@Component
+@Service
 public class PublicEventServiceImpl implements PublicEventService {
     private final EventRepository repository;
     private final StatsService statsService;

@@ -2,7 +2,8 @@ package ru.practicum.explore.ewm.dto;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
@@ -10,17 +11,18 @@ import java.time.LocalDateTime;
 /**
  * Новое событие
  */
-@Data
+@Getter
+@Setter
 @Builder
 @Jacksonized
 public class NewEventDto {
-    @NotNull
+    @NotBlank
     @Size(max = 2000, min = 20, message = "Максимальная длина аннотации события — 2000 символов, минимальная - 20!")
     private String annotation;          //Краткое описание события
     @NotNull
     private Long category;              //id категории к которой относится событие
     @Size(max = 7000, min = 20, message = "Максимальная длина описания события — 7000 символов, минимальная - 20!")
-    @NotNull
+    @NotBlank
     private String description;         //Полное описание события
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -32,7 +34,7 @@ public class NewEventDto {
     private Boolean requestModeration;  //Нужна ли пре-модерация заявок на участие. Если true, то все заявки будут
                                         //ожидать подтверждения инициатором события. Если false - то будут
                                         //подтверждаться автоматически.
-    @NotNull
+    @NotBlank
     @Size(max = 120, min = 3, message = "Максимальная длина заголовка события — 120 символов, минимальная - 3!")
     private String title;               //Заголовок события
 }

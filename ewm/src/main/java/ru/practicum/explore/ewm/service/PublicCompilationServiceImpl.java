@@ -3,7 +3,7 @@ package ru.practicum.explore.ewm.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.explore.ewm.dto.CompilationDto;
 import ru.practicum.explore.ewm.mapper.CompilationMapper;
 import ru.practicum.explore.ewm.model.Compilation;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Component
+@Service
 public class PublicCompilationServiceImpl implements PublicCompilationService {
     private final CompilationRepository repository;
 
@@ -32,8 +32,12 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
     @Override
     public Collection<CompilationDto> search(Boolean pinned, Integer from, Integer size) {
         Pageable pagingSet = PageRequest.of(from / size, size);
-
-        Page<Compilation> retPage = repository.findByPinned(pinned, pagingSet);
+        Page<Compilation> retPage = null;
+        if (pinned != null) {
+            retPage = repository.findAllByPinned(pinned, pagingSet);
+        } else {
+            retPage = repository.findAll(pagingSet);
+        }
 
         List<CompilationDto> ret = new ArrayList<>();
         for (Compilation compilation : retPage) {

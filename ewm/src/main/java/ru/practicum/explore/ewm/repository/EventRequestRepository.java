@@ -16,5 +16,16 @@ public interface EventRequestRepository extends JpaRepository<EventRequest, Long
             nativeQuery = true)
     List<EventRequest> findAllOwnRequests(Long userId);
 
+    @Query(value = " select count(*) " +
+                     " from event_request er " +
+                    " where er.event_id = ?1 " +
+                      " and er.status = 'CONFIRMED' ",
+            nativeQuery = true)
+    Integer countAllByEventId(Long eventId);
+
     List<EventRequest> findAllByEvent_Initiator_IdAndEvent_Id(Long userId, Long eventId);
+
+    EventRequest findByRequester_idAndId(Long userId, Long requestId);
+
+    boolean existsByRequester_IdAndEvent_Id(Long userId, Long eventId);
 }

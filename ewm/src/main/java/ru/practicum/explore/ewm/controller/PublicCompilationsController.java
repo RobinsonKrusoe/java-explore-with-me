@@ -1,7 +1,6 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.CompilationDto;
 import ru.practicum.explore.ewm.service.PublicCompilationService;
@@ -12,7 +11,6 @@ import java.util.Collection;
  * Публичный API для работы с подборками событий
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/compilations")
 public class PublicCompilationsController {

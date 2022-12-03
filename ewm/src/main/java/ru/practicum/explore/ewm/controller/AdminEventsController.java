@@ -1,12 +1,12 @@
 package ru.practicum.explore.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.ewm.dto.AdminUpdateEventRequestDto;
 import ru.practicum.explore.ewm.dto.EventFullDto;
 import ru.practicum.explore.ewm.service.AdminEventService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +14,6 @@ import java.util.List;
  * Контроллер API для работы с событиями
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping(path = "/admin/events")
 public class AdminEventsController {
@@ -58,10 +57,10 @@ public class AdminEventsController {
      */
 
     @PutMapping("/{eventId}")
-    public EventFullDto saveEvent(@RequestBody AdminUpdateEventRequestDto eventDto,
-                                  @PathVariable Long eventId) {
+    public EventFullDto updateEvent(@Valid @RequestBody AdminUpdateEventRequestDto eventDto,
+                                    @PathVariable Long eventId) {
         log.info("Save Event with eventDto {}, eventId={}", eventDto, eventId);
-        return service.save(eventDto, eventId);
+        return service.update(eventDto, eventId);
     }
 
     /**

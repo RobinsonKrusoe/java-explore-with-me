@@ -1,9 +1,10 @@
 package ru.practicum.explore.ewm.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.errorHandle.exception.EntityAlreadyExistException;
 import ru.practicum.explore.errorHandle.exception.EntityNotFoundException;
 import ru.practicum.explore.errorHandle.exception.ValidationException;
@@ -16,9 +17,8 @@ import ru.practicum.explore.ewm.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-@Component
+@Service
 public class AdminUserServiceImpl implements AdminUserService {
     private final UserRepository repository;
 
@@ -36,8 +36,13 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public Collection<UserDto> get(List<Long> ids, Integer from, Integer size) {
         Pageable pagingSet = PageRequest.of(from / size, size);
+        Page<User> retPage = null;
 
-        Page<User> retPage = repository.getAllByIdIn(ids, pagingSet);
+        if (ids != null && ids.size() > 0) {
+            retPage = repository.findAllByIdIn(ids, pagingSet);
+        } else {
+            retPage = repository.findAll(pagingSet);
+        }
 
         List<UserDto> ret = new ArrayList<>();
         for (User user : retPage) {
@@ -53,6 +58,7 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param newUserDto
      */
     @Override
+    @Transactional
     public UserDto add(NewUserRequestDto newUserDto) {
         if (newUserDto.getEmail() == null || newUserDto.getName() == null) {
             throw new ValidationException("Некорректный запрос на добавление пользователя!");
@@ -64,23 +70,18 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
 
         User user = UserMapper.toUser(newUserDto);
-        user = repository.saveAndFlush(user);
+        repository.save(user);
         return UserMapper.toUserDto(user);
     }
 
     /**
      * Получение пользователя п идентификатору
      *
-     * @param id
+     * @param userId
      */
-    @Override
-    public User getUser(long id) {
-        Optional<User> user = repository.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            throw new EntityNotFoundException("Пользователь #" + id + "не существует!");
-        }
+    private User getUser(Long userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь #" + userId + " не существует!"));
     }
 
     /**
@@ -89,7 +90,8 @@ public class AdminUserServiceImpl implements AdminUserService {
      * @param id
      */
     @Override
-    public void del(long id) {
+    @Transactional
+    public void del(Long id) {
         getUser(id);
         repository.deleteById(id);
     }

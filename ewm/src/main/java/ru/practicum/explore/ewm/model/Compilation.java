@@ -1,29 +1,28 @@
 package ru.practicum.explore.ewm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Класс подборки событий
  */
 @Entity
 @Table(name = "compilations")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;            //уникальный идентификатор
-    private Boolean pinned;
+    private boolean pinned;
     private String title;
     @ManyToMany
     @JoinTable(name = "event_compilation",
             joinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
-    private Collection<Event> events;
+    private Set<Event> events;
 }

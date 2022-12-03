@@ -1,20 +1,19 @@
 package ru.practicum.explore.ewm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Класс события
  */
 @Entity
 @Table(name = "events")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Event {
@@ -47,6 +46,6 @@ public class Event {
     @JoinTable(name = "event_compilation",
             joinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"))
-    private List<Compilation> compilations;
+    private Set<Compilation> compilations;
 }
 

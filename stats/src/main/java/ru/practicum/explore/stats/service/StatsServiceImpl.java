@@ -1,9 +1,9 @@
 package ru.practicum.explore.stats.service;
 
+import org.springframework.stereotype.Service;
 import ru.practicum.explore.stats.dto.HitDto;
 import ru.practicum.explore.stats.dto.ViewDto;
 
-import org.springframework.stereotype.Component;
 import ru.practicum.explore.stats.mapper.StatsMapper;
 import ru.practicum.explore.stats.model.Hit;
 import ru.practicum.explore.stats.repository.StatsRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Сервис для работы со статистикой
  */
-@Component
+@Service
 public class StatsServiceImpl implements StatsService {
     private final StatsRepository repository;
 

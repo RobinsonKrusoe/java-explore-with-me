@@ -2,7 +2,8 @@ package ru.practicum.explore.ewm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
  * Информация для редактирования события администратором. Все поля необязательные. Значение полей не валидируется.
  */
 
-@Data
+@Getter
+@Setter
 @Builder
 @Jacksonized
 public class AdminUpdateEventRequestDto {
