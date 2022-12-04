@@ -203,13 +203,14 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Transactional
     public EventFullDto reject(Long eventId) {
         Event eventDB = get(eventId);
-        if (eventDB.getState() == EventState.PENDING) {
-            eventDB.setState(EventState.CANCELED);
-            repository.save(eventDB);
-            return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
-        } else {
+
+        if (eventDB.getState() != EventState.PENDING) {
             throw new ValidationException("Нельзя отменить событие в статусе" + eventDB.getState() + "!");
         }
+
+        eventDB.setState(EventState.CANCELED);
+        repository.save(eventDB);
+        return EventMapper.toEventFullDto(statsService.fillViews(eventDB));
     }
 
     /**

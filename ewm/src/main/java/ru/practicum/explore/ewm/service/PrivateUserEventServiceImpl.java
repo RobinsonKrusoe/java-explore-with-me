@@ -176,11 +176,11 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
                 .orElseThrow(() -> new EntityNotFoundException("Событие #" + eventId +
                         " у пользователя " + userId + " не найдено!"));
 
-        if (eventDB.getState() == EventState.PENDING) {
-            eventDB.setState(EventState.CANCELED);
-        } else {
+        if (eventDB.getState() != EventState.PENDING) {
             throw new ValidationException("Отменять можно только события в статусе " + EventState.PENDING);
         }
+
+        eventDB.setState(EventState.CANCELED);
 
         repository.save(eventDB);
 
@@ -223,6 +223,11 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
             throw new ValidationException("Можно подтверждать только заявки на своё мероприятие!");
         }
 
+        if (eReq.getEvent().getId() != eventId) {
+            throw new ValidationException("Мероприятие #" + eventId +
+                    " не соответствует мероприятию #" + eReq.getEvent().getId() + " в запросе!");
+        }
+
         if (eReq.getEvent().getParticipantLimit() > 0) {    //Если установлен лимит заявок
             Integer reqCount = requestRepository.countAllByEventId(eventId);
             if (eReq.getEvent().getParticipantLimit() <= reqCount) {
@@ -252,6 +257,11 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
 
         if (eReq.getEvent().getInitiator().getId() != userId) {
             throw new ValidationException("Можно отменять заявки только на своё мероприятие!");
+        }
+
+        if (eReq.getEvent().getId() != eventId) {
+            throw new ValidationException("Мероприятие #" + eventId +
+                    " не соответствует мероприятию #" + eReq.getEvent().getId() + " в запросе!");
         }
 
         eReq.setStatus(RequestState.REJECTED);
