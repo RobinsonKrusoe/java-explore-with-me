@@ -14,5 +14,5 @@ public class UserShortDto {
     @NotNull
     private Long id;        //Идентификатор записи
     @NotBlank
-    private String name;    //Имя категории
+    private String name;    //Имя пользователя
 }
